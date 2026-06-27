@@ -13,7 +13,6 @@ import {
   Bookmark,
   Mail,
   MessageSquare,
-  ChevronRight,
 } from 'lucide-react';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
@@ -33,6 +32,12 @@ import type { Blog, Comment } from '@/lib/types';
 import { timeAgo, getLargeImageUrl, extractYouTubeId, slugify } from '@/lib/utils';
 import { getArticlePath } from '@/lib/routes';
 
+type TocHeading = {
+  id: string;
+  text: string;
+  tagName: string;
+};
+
 export default function BlogPostPage() {
   const params = useParams();
   const slug = params.slug as string;
@@ -48,6 +53,7 @@ export default function BlogPostPage() {
   const [likes, setLikes] = useState(0);
   const [views, setViews] = useState(0);
   const [hasLiked, setHasLiked] = useState(false);
+  const [headings, setHeadings] = useState<TocHeading[]>([]);
   const [isDark, setIsDark] = useState(() => {
     if (typeof window === 'undefined') return false;
     const savedTheme = localStorage.getItem('theme');
@@ -97,13 +103,39 @@ export default function BlogPostPage() {
     });
   }, []);
 
-  // Code highlighting
+  // Code highlighting and table of contents
   useEffect(() => {
-    if (blog && contentRef.current) {
-      contentRef.current.querySelectorAll('pre code').forEach((block) => {
+    if (!blog) return;
+
+    const frame = requestAnimationFrame(() => {
+      const content = contentRef.current;
+      if (!content) return;
+
+      content.querySelectorAll('pre code').forEach((block) => {
         hljs.highlightElement(block as HTMLElement);
       });
-    }
+
+      const nextHeadings = Array.from(content.querySelectorAll<HTMLHeadingElement>('h2, h3'))
+        .map((heading, index) => {
+          const text = heading.textContent?.trim() || '';
+          if (!text) return null;
+
+          if (!heading.id) {
+            heading.id = slugify(`${text}-${index}`);
+          }
+
+          return {
+            id: heading.id,
+            text,
+            tagName: heading.tagName,
+          };
+        })
+        .filter((heading): heading is TocHeading => Boolean(heading));
+
+      setHeadings(nextHeadings);
+    });
+
+    return () => cancelAnimationFrame(frame);
   }, [blog]);
 
   // Fetch blog
@@ -275,9 +307,6 @@ export default function BlogPostPage() {
   const html = blog.content ? DOMPurify.sanitize(marked.parse(blog.content) as string) : '';
   const youtubeId = extractYouTubeId(blog.youtubeUrl || '');
   const articleUrl = getArticlePath(slugify(blog.category), blog.slug);
-
-  // Generate table of contents
-  const headings = contentRef.current ? Array.from(contentRef.current.querySelectorAll('h2, h3')) : [];
 
   return (
     <div className="min-h-screen">
@@ -737,15 +766,15 @@ export default function BlogPostPage() {
                   Table of Contents
                 </h3>
                 <nav className="text-sm text-slate-600 dark:text-slate-400 space-y-3 font-medium">
-                  {headings.map((heading, idx) => (
+                  {headings.map((heading) => (
                     <a
-                      key={idx}
+                      key={heading.id}
                       href={`#${heading.id}`}
                       className={`block hover:text-primary transition-colors ${
                         heading.tagName === 'H3' ? 'pl-4' : ''
                       }`}
                     >
-                      {heading.textContent}
+                      {heading.text}
                     </a>
                   ))}
                 </nav>

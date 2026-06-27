@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import '../../globals.css';
 
 export const metadata: Metadata = {
   title: 'The Engineering Journal',
@@ -12,11 +11,5 @@ export default function BlogPostLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body className="min-h-screen bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 transition-colors duration-300 font-sans antialiased">
-        {children}
-      </body>
-    </html>
-  );
+  return children;
 }

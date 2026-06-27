@@ -1,0 +1,43 @@
+export const metadata = {
+  title: 'MDX Content Pipeline | The Engineering Journal',
+  description:
+    'A working MDX article that proves the Next.js, TypeScript, Tailwind CSS, and MDX content pipeline is enabled.',
+  alternates: {
+    canonical: '/engineering-notes/mdx-content-pipeline',
+  },
+  openGraph: {
+    title: 'MDX Content Pipeline',
+    description:
+      'A working MDX article rendered through the Next.js MDX pipeline with Tailwind styling.',
+    type: 'article',
+    url: '/engineering-notes/mdx-content-pipeline',
+    siteName: 'The Engineering Journal',
+  },
+};
+
+# MDX Content Pipeline
+
+This page is rendered from a real `.mdx` file inside the Next.js app router. It confirms that TypeScript, Tailwind CSS, and MDX can live together in this project without falling back to plain HTML rendering.
+
+<div className="not-prose rounded-lg border border-slate-200 bg-slate-50 p-5 text-sm text-slate-700 dark:border-slate-800 dark:bg-slate-900/70 dark:text-slate-300">
+  <strong className="text-slate-950 dark:text-white">Enabled stack:</strong> `.tsx`, `.ts`, `.css`, and `.mdx` are now part of the frontend build path.
+</div>
+
+## What This Adds
+
+- `.mdx` and `.md` page extensions are enabled in `next.config.ts`.
+- Shared MDX components are defined in `mdx-components.tsx`.
+- TypeScript can include Markdown and MDX files during project analysis.
+- Tailwind scans app, component, page, and MDX files for class names.
+
+## Example Code Block
+
+```tsx
+export function JournalNote() {
+  return <p className="text-slate-700">MDX is ready for engineering notes.</p>;
+}
+```
+
+## Next Use
+
+Use this route pattern for long-form engineering notes that need Markdown writing speed plus React components where the article needs richer UI.

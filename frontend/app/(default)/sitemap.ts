@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { ARTICLE_CATEGORIES, STATIC_PAGES } from '@/lib/routes';
+import { ARTICLE_CATEGORIES, MDX_CONTENT_ROUTES, STATIC_PAGES } from '@/lib/routes';
 import type { Blog } from '@/lib/types';
 import { slugify } from '@/lib/utils';
 import { buildServerApiUrl, SITE_ORIGIN } from '@/lib/apiConfig';
@@ -48,6 +48,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: 'monthly' as const,
       priority: 0.5,
+    })),
+    ...MDX_CONTENT_ROUTES.map((route) => ({
+      url: `${SITE_ORIGIN}/${route.slug}`,
+      lastModified: new Date(route.updatedAt),
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
     })),
     ...blogs.map((blog) => ({
       url: `${SITE_ORIGIN}/${slugify(blog.category)}/${blog.slug}`,

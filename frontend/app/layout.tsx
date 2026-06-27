@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { AgentWidget } from '@/components/AgentWidget';
+import { SITE_ORIGIN } from '@/lib/apiConfig';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_ORIGIN),
   title: {
     default: 'The Engineering Journal',
     template: '%s | The Engineering Journal',

@@ -55,6 +55,15 @@ export function AgentWidget() {
   const [isIdle, setIsIdle] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [currentTime, setCurrentTime] = useState<number | null>(null);
+
+  useEffect(() => {
+    const updateCurrentTime = () => setCurrentTime(Date.now());
+    updateCurrentTime();
+
+    const timer = setInterval(updateCurrentTime, 60000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     // Initial status fetch
@@ -183,8 +192,8 @@ export function AgentWidget() {
   };
 
   const minutesUntil = (dateStr?: string) => {
-    if (!dateStr) return null;
-    const m = Math.max(0, Math.round((new Date(dateStr).getTime() - Date.now()) / 60000));
+    if (!dateStr || currentTime === null) return null;
+    const m = Math.max(0, Math.round((new Date(dateStr).getTime() - currentTime) / 60000));
     return m;
   };
 

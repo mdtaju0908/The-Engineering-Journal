@@ -13,6 +13,18 @@ export const STATIC_PAGES = [
   { label: 'Newsletter', slug: 'newsletter' },
 ];
 
+export const MDX_CONTENT_ROUTES = [
+  {
+    title: 'MDX Content Pipeline',
+    slug: 'engineering-notes/mdx-content-pipeline',
+    description:
+      'A working MDX article that proves the Next.js, TypeScript, Tailwind CSS, and MDX content pipeline is enabled.',
+    category: 'Engineering Notes',
+    publishedAt: '2026-06-27',
+    updatedAt: '2026-06-27',
+  },
+] as const;
+
 export function getArticlePath(categorySlug: string, articleSlug: string) {
   return `/${categorySlug}/${articleSlug}`;
 }
@@ -20,4 +32,3 @@ export function getArticlePath(categorySlug: string, articleSlug: string) {
 export function getCategoryLabel(slug: string) {
   return ARTICLE_CATEGORIES.find((category) => category.slug === slug)?.label || 'All';
 }
-

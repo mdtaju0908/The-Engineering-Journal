@@ -1,4 +1,4 @@
-import { ARTICLE_CATEGORIES } from '@/lib/routes';
+import { ARTICLE_CATEGORIES, MDX_CONTENT_ROUTES } from '@/lib/routes';
 import type { Blog } from '@/lib/types';
 import { slugify } from '@/lib/utils';
 import { buildServerApiUrl, SITE_ORIGIN } from '@/lib/apiConfig';
@@ -36,9 +36,27 @@ async function getLatestBlogs() {
 
 export async function GET() {
   const blogs = await getLatestBlogs();
-  const updated = blogs[0]?.updatedAt || blogs[0]?.createdAt || new Date().toISOString();
+  const updated =
+    blogs[0]?.updatedAt ||
+    blogs[0]?.createdAt ||
+    MDX_CONTENT_ROUTES[0]?.updatedAt ||
+    new Date().toISOString();
 
-  const items = blogs
+  const staticItems = MDX_CONTENT_ROUTES.map((route) => {
+    const url = `${SITE_ORIGIN}/${route.slug}`;
+    return [
+      '<item>',
+      `  <title>${escapeXml(route.title)}</title>`,
+      `  <link>${escapeXml(url)}</link>`,
+      `  <guid>${escapeXml(url)}</guid>`,
+      `  <description>${escapeXml(route.description)}</description>`,
+      `  <category>${escapeXml(route.category)}</category>`,
+      `  <pubDate>${new Date(route.publishedAt).toUTCString()}</pubDate>`,
+      '</item>',
+    ].join('\n');
+  });
+
+  const blogItems = blogs
     .map((blog) => {
       const url = `${SITE_ORIGIN}/${slugify(blog.category)}/${blog.slug}`;
       return [
@@ -53,6 +71,8 @@ export async function GET() {
       ].join('\n');
     })
     .join('\n');
+
+  const items = [...staticItems, blogItems].filter(Boolean).join('\n');
 
   const categoryLinks = ARTICLE_CATEGORIES.map(
     (category) => `<atom:link rel="section" href="${SITE_ORIGIN}/${category.slug}" title="${escapeXml(category.label)}" />`
