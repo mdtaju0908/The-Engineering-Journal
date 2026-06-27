@@ -1,11 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { Search, X, Sun, Moon, Menu } from 'lucide-react';
+import { Search, X, Sun, Moon } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { ARTICLE_CATEGORIES } from '@/lib/routes';
-import { slugify } from '@/lib/utils';
 
 export function Navbar() {
   const [isDark, setIsDark] = useState(() => {
@@ -15,7 +13,6 @@ export function Navbar() {
     return saved === 'dark' || (!saved && prefersDark);
   });
   const [searchOpen, setSearchOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     if (isDark) {
@@ -55,30 +52,7 @@ export function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop Nav Links */}
-          <div className="hidden md:flex items-center gap-6">
-            {ARTICLE_CATEGORIES.map((category) => (
-              <Link
-                key={category.slug}
-                href={`/${category.slug}`}
-                className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors"
-              >
-                {category.label}
-              </Link>
-            ))}
-            <Link
-              href="/about"
-              className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors"
-            >
-              About
-            </Link>
-            <Link
-              href="/newsletter"
-              className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors"
-            >
-              Newsletter
-            </Link>
-          </div>
+
 
           <div className="flex items-center gap-2 sm:gap-4">
             <button
@@ -93,48 +67,11 @@ export function Navbar() {
             >
               {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
-            >
-              <Menu className="w-5 h-5" />
-            </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-3">
-            {ARTICLE_CATEGORIES.map((category) => (
-              <Link
-                key={category.slug}
-                href={`/${category.slug}`}
-                onClick={() => setMobileMenuOpen(false)}
-                className="block py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors"
-              >
-                {category.label}
-              </Link>
-            ))}
-            <Link
-              href="/about"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors"
-            >
-              About
-            </Link>
-            <Link
-              href="/newsletter"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors"
-            >
-              Newsletter
-            </Link>
-          </div>
-        </div>
-      )}
+
 
       {/* Search Modal */}
       {searchOpen && (
