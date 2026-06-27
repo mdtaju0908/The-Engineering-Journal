@@ -1,6 +1,6 @@
 <p align="center">
   <img src="./frontend/public/tej-logo.svg" alt="The Engineering Journal Logo" width="120" height="120" />
-</p>
+</p> 
 
 <h1 align="center">The Engineering Journal</h1>
 
